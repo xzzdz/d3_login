@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:d3_login/service/auth_service.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../config/app.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,10 +16,29 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  Future<void> checkLogin() async {
+    final prefs = await _prefs;
+    final token = prefs.getString('token');
+    if (token != null) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    AuthService.checkLogin().then((value) {
+      if (value) {
+        Navigator.pushNamed(context, '/home');
+      }
+    });
+  }
 
   Future login() async {
     final response = await http.post(
-      Uri.parse('$API_URL/login'),
+      Uri.parse('$API_URL/api/auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -28,6 +47,13 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': _password.text,
       }),
     );
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final prefs = await _prefs;
+      prefs.setString('token', jsonDecode(response.body)['token']);
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
   }
 
   @override
