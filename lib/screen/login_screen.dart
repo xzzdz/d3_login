@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Text('โปรดเข้าสู่ระบบ'),
+            Text('กรุณาเข้าสู่ระบบ'),
             TextFormField(
               controller: _email,
               decoration: const InputDecoration(
