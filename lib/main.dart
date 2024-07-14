@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:d3_login/screen/home_screen.dart';
 import 'package:d3_login/screen/login_screen.dart';
 import 'package:d3_login/screen/register_screen.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
